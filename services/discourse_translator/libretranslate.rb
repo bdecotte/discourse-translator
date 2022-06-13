@@ -7,7 +7,7 @@ module DiscourseTranslator
   class LibreTranslate < Base
     MAXLENGTH = 5000
 
-    SUPPORTED_LANG = {
+    SUPPORTED_LANG_MAPPING = {
       en: 'en',
       en_US: 'en',
       en_GB: 'en',
@@ -77,7 +77,7 @@ module DiscourseTranslator
     end
 
     def self.translate_supported?(source, target)
-      lang = SUPPORTED_LANG[target]
+      lang = SUPPORTED_LANG_MAPPING[target]
       res = result(support_uri, {})
       res.any? { |obj| obj["code"] == source } && res.any? { |obj| obj["code"] == lang }
     end
@@ -91,7 +91,7 @@ module DiscourseTranslator
         res = result(translate_uri,
           q: ActionController::Base.helpers.strip_tags(post.cooked).truncate(MAXLENGTH, omission: nil),
           source: detected_lang,
-          target: SUPPORTED_LANG[I18n.locale]
+          target: SUPPORTED_LANG_MAPPING[I18n.locale]
         )
         res["translatedText"]
       end
